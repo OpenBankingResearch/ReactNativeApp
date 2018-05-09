@@ -9,6 +9,7 @@ import ButtonSubmit from './ButtonSubmit'
 
 import backgroundSrc from '../img/background3.jpg';
 import logoImg from '../img/reactLogo.png';
+import nbsLogo from '../img/nbs.png';
 import usernameImg from '../img/username.png';
 import passwordImg from '../img/password.png';
 import eyeImg from '../img/eye_black.png';
@@ -120,7 +121,7 @@ export class LoginScreen extends Component {
       }}>
         {/* Logo */}
         <View style={styles.imageContainer}>
-          <Image source={logoImg} style={styles.image} />
+          <Image source={nbsLogo} style={styles.image} />
           <Text style={styles.text}>Navonmesh</Text>
         </View>
         <View style={{flex:1, justifyContent: 'flex-start'}}>
@@ -161,12 +162,12 @@ export class LoginScreen extends Component {
               activeOpacity={1}
               //onPress={this.onSignUp} 
               style={styles.signupText}>
-              <Text style={{color:'white'}}>Create Account</Text>
+              <Text style={{color:'#052d78'}}>Create Account</Text>
               </TouchableOpacity>
               <TouchableOpacity
               activeOpacity={1}
               style={styles.signupText}>
-              <Text style={{color:'white'}}>Forgot Password</Text>
+              <Text style={{color:'#052d78'}}>Forgot Password</Text>
               </TouchableOpacity>
             </View>
               {this.state.invalidLogin ? 
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: null,
     height: null,
-    backgroundColor: '#34495e',
+    backgroundColor: '#ecf0f1',
   },
   imageContainer: {
     flex: 3,
@@ -199,9 +200,12 @@ const styles = StyleSheet.create({
   image: {
     width: 100, //80
     height: 100, //80
+    width: 50,
+    height: 50,
+    resizeMode: 'contain'
   },
   text: {
-    color: 'white',
+    color: '#052d78',
     fontWeight: 'bold',
     backgroundColor: 'transparent',
     marginTop: 20,

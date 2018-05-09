@@ -29,10 +29,24 @@ import PersonalDetailsScreen from './components/PersonalDetailsScreen.js';
 // }
 // );
 
-const DrawerStack = DrawerNavigator({
+const AccountStack = StackNavigator({
   AccountList: { screen: AccountListScreen },
+  AccountDetails: { screen: AccountDetailsScreen },
+},
+{
+  headerMode: 'none',
+  headerLeft: 'none',
+  initialRouteName: 'AccountList',
+});
+
+const DrawerStack = DrawerNavigator({
+  AccountList: { screen: AccountStack },
   PersonalDetails: { screen: PersonalDetailsScreen },
-})
+},
+{
+headerLeft: 'none',
+initialRouteName: 'AccountList',
+});
 
 const RootStack = StackNavigator(
   {

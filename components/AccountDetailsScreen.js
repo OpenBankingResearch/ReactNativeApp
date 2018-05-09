@@ -11,30 +11,49 @@ import {
   AsyncStorage,
   Text,
   FlatList,
+  TextInput
 } from 'react-native';
 import Dimensions from 'Dimensions';
+import { HeaderBackArrow } from 'react-navigation';
 
+import Icon from 'react-native-vector-icons/FontAwesome'
 import arrowImg from '../img/left-arrow.png';
 
 const SIZE = 40;
 
 export default class AccountScreen extends Component {
+  static navigationOptions = ({navigation, screenProps}) => {
+    const params = navigation.state.params || {};
+    return {
+    title: 'Account Details',
+    headerLeft:
+    <TouchableOpacity
+    onPress={() => {
+        navigation.navigate('AccountList');
+    }}>
+    <Icon name={'chevron-left'} size={20} color='#0f469e' style={{paddingLeft: 15}}/>
+    {/* <Text>Account List</Text> */}
+    </TouchableOpacity>
+    }
+}
+  
   constructor(props) {
     super(props);
     
     const { params } = this.props.navigation.state;
-    console.log(params.index);
+    //console.log(params.index);
     this.state = {
-        name: params.name,
-        sortCode: params.sortCode,
-        accountNumber: params.accountNumber,
-        balance: params.balance,
+        customerId: params.customerId,
+        creditCardNumber: params.creditCardNumber,
+        creditCardType: params.creditCardType,
+        issueDate: params.issueDate,
+        expiryDate: params.expiryDate,
+        cvv: params.cvv,
+        maxLimit: params.maxLimit,
         transactions: null
     };
 
-    this.onPressBack = this.onPressBack.bind(this);
     this.getTransactions = this.getTransactions.bind(this);
-    this.growAnimated = new Animated.Value(0);
     this.getTransactions();
   }
 
@@ -55,22 +74,6 @@ export default class AccountScreen extends Component {
       console.log('AsyncStorage error: ' + error.message);
     }
   }
-
-  onPressBack() {
-    if (this.state.isLoading) return;
-
-    this.setState({isLoading: true});
-
-    Animated.timing(this.growAnimated, {
-      toValue: 1,
-      duration: 300,
-      easing: Easing.linear,
-    }).start();
-
-    setTimeout(() => {
-      this.props.navigation.goBack();
-    }, 500);
-  }
   
   async getTransactions() {
     //var DEMO_TOKEN = await AsyncStorage.getItem('token'); //STORAGE_KEY
@@ -86,29 +89,55 @@ export default class AccountScreen extends Component {
   }
 
   render() {
-    const changeScale = this.growAnimated.interpolate({
-      inputRange: [0, 1],
-      outputRange: [1, SIZE],
-    });
-
     return (
     <View style={{
     flex: 1,
     width: null,
     height: null,
-    backgroundColor: '#34495e',
+    backgroundColor: '#ecf0f1',
     justifyContent: 'flex-start'
     }}>
         <View style={{
         alignItems: 'center',
-        paddingTop: 10
+        paddingTop: 10,
         }}>
-            <Text style={{fontSize: 20, color: 'white'}}>Account name: {this.state.name}</Text>
-            <Text style={{fontSize: 20, color: 'white'}}>Sort Code: {this.state.sortCode}</Text>
-            <Text style={{fontSize: 20, color: 'white'}}>Account number: {this.state.accountNumber}</Text>
-            <Text style={{fontSize: 20, color: 'white'}}>Balance: £{this.state.balance}</Text>
+            {/* <Text style={{fontSize: 15, color: '#052d78'}}>Customer Id</Text>
+            <Text style={{fontSize: 20, color: '#052d78'}}>{this.state.customerId}</Text> */}
+            <View style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignSelf: 'stretch',
+                padding: 10,
+                }}>
+              <View>
+                <Text style={{fontSize: 15, color: '#052d78'}}>Credit Card Number</Text>
+                <Text style={{fontSize: 20, color: '#052d78'}}>{this.state.creditCardNumber}</Text>
+                <Text style={{fontSize: 15, color: '#052d78'}}>Credit Card Type</Text>
+                <Text style={{fontSize: 20, color: '#052d78'}}>{this.state.creditCardType}</Text>
+                <Text style={{fontSize: 15, color: '#052d78'}}>Issue Date</Text>
+                <Text style={{fontSize: 20, color: '#052d78'}}>{this.state.issueDate}</Text>
+                <Text style={{fontSize: 15, color: '#052d78'}}>Expiry Date</Text>
+                <Text style={{fontSize: 20, color: '#052d78'}}>{this.state.expiryDate}</Text>
+              </View>
+              <View style={{alignItems: 'flex-end'}}>
+                <Text style={{fontSize: 15, color: '#052d78'}}>Max Limit</Text>
+                <Text style={{fontSize: 20, color: '#052d78'}}>£{this.state.maxLimit}</Text>
+                <Text style={{fontSize: 15, color: '#052d78'}}>CVV</Text>
+                <Text style={{fontSize: 20, color: '#052d78'}}>{this.state.cvv}</Text>
+              </View>
+            </View>
         </View>
-        <View style={{}}>
+        <View style={{backgroundColor: 'white', marginTop: 10}}>
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <TextInput style={{marginTop: 10, backgroundColor: '#ecf0f1', width: DEVICE_WIDTH * 0.9, height: 40, borderRadius: 5,
+        borderColor: '#7f8c8d', borderWidth: 1, textAlign: 'center'}} placeholder={'Search Transactions'}>
+        </TextInput>
+        <Icon name={'search'} size={20} color='#0f469e' style={{paddingLeft: 15,
+        position: 'absolute',
+        left: 82,
+        top: 18,
+        }}/>
+        </View>
         <FlatList 
         data={this.state.transactions}
         style={{padding:10}}
@@ -118,12 +147,20 @@ export default class AccountScreen extends Component {
             key={index}
             //onPress={() => this.onAccountDetails(index)}
             style={{
-                backgroundColor: 'white',
                 marginBottom: 10,
                 padding: 10,
-                borderRadius: 10,
+                borderBottomColor: '#bdc3c7',
+                borderBottomWidth: 2,
             }}>
+            
             <View key={'1-'+{index}} style={{}}>
+                <Text key={'2-'+{index}} style={{color: "#052d78", fontSize: 20}}>{item.creditor_first_name} {item.creditor_last_name}
+                </Text>
+                <Text key={'3-'+{index}} style={{color: "#052d78", fontSize: 20}}>£{item.amount.toString()}
+                </Text>
+            </View>
+            
+            {/* <View key={'1-'+{index}} style={{}}>
                 <Text key={'2-'+{index}} style={{color: "black", fontSize: 20}}>Date: {item.date}
                 </Text>
                 <Text key={'3-'+{index}} style={{color: "black", fontSize: 20}}>Amount: £{item.amount.toString()}
@@ -134,7 +171,7 @@ export default class AccountScreen extends Component {
                 <Text key={'6-'+{index}} style={{color: "black", fontSize: 16}}>Debtor: {item.debtor_first_name} {item.debtor_last_name}
                 </Text>
             </View>
-            </View>
+            </View> */}
             </TouchableOpacity>
         }
         />

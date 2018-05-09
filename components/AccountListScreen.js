@@ -50,7 +50,7 @@ export default class AccountListScreen extends Component {
     componentDidMount() {
         this.props.navigation.setParams({
             onLogout: this.onLogout,
-        })
+        });
     }
 
   constructor(props) {
@@ -59,21 +59,31 @@ export default class AccountListScreen extends Component {
     //this.props.navigation.toggleDrawer();
     this.state = {
       userId: this.props.navigation.getParam('username'),
+      creditCard: [
+        {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260},
+        {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260}
+      ],
+      mortgage: [
+        {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260},
+        {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260}
+      ],
       accounts: [
-        // {name: 'Credit Card', balance: '5600000.45', sortCode: '05-23-81', accountNumber: '45367863', key: 1},
+        // {name: 'Credit Card', balance: '5600.45', sortCode: '05-23-81', accountNumber: '45367863', key: 1},
         // {name: 'Mortgage', balance: '560.45', sortCode: '05-23-81', accountNumber: '45367863', key: 2},
         // {name: 'Mortgage', balance: '560.45', sortCode: '05-23-81', accountNumber: '45367863', key: 3},
         // {name: 'Mortgage', balance: '560.45', sortCode: '05-23-81', accountNumber: '45367863', key: 4},
       ]
     };
 
-    console.log('UserId: ' + this.state.userId);
+    //console.log('UserId: ' + this.state.userId);
 
     this.onPressBack = this.onPressBack.bind(this);
     this.onLogout = this.onLogout.bind(this);
+    this.getAccounts = this.getAccounts.bind(this);
+    this.onAccountDetails = this.onAccountDetails.bind(this);
     this.growAnimated = new Animated.Value(0);
 
-    this.getAccounts();
+    //this.getAccounts();
   }
 
   onLogout() {
@@ -94,18 +104,26 @@ export default class AccountListScreen extends Component {
   }
   
   async getAccounts() {
+
     //var DEMO_TOKEN = await AsyncStorage.getItem('token'); //STORAGE_KEY
     //console.log(DEMO_TOKEN);
-    fetch("http://localhost:8082/mortgages/02", {
+    var url = "http://localhost:8082/mvp-dev/creditcard/" + 
+    //this.state.userId; 
+    'hhaytonci';
+    console.log('GET request from ' + url);
+    fetch(url, {
         method: "GET",
         headers: {
-          'userId': this.state.userId
+          //'userId': this.state.userId
         }
     })
-    .then((response) => response.json())
+    .then((response) => response.text())
     .then((responseData) => {
         //this.setState({transactions: responseData});
-        console.log(responseData)
+        console.log("response: " + responseData);
+        //this.setState({accounts: responseData});
+        //this.setState({creditCard: responseData});
+
     }).catch((error) => {
       console.log("error: " + error);
     })
@@ -144,12 +162,17 @@ export default class AccountListScreen extends Component {
     }, 500);
   }
 
-  onAccountDetails(index) {
-    this.props.navigation.navigate('Account', {
-        name: this.state.accounts[index].name,
-        sortCode: this.state.accounts[index].sortCode,
-        accountNumber: this.state.accounts[index].accountNumber,
-        balance: this.state.accounts[index].balance,
+  onAccountDetails(item) {
+    //console.log('selected item: ' + item);
+    var account = item;
+    this.props.navigation.navigate('AccountDetails', {
+        customerId: account.customerId,
+        creditCardNumber: account.creditCardNumber,
+        creditCardType: account.creditCardType,
+        issueDate: account.issueDate,
+        expiryDate: account.expiryDate,
+        cvv: account.cvv,
+        maxLimit: account.maxLimit,
     });
   }
 
@@ -158,20 +181,53 @@ export default class AccountListScreen extends Component {
       inputRange: [0, 1],
       outputRange: [1, SIZE],
     });
+    //console.log('account: ' + this.state.accounts[0]);
+    //console.log(this.state.creditCard);
 
     return (
     <View style={styles.container}>
     <FlatList 
-    data={this.state.accounts}
+    data={this.state.creditCard}
     style={{padding:15}}
-    keyExtractor={(item, index) => item.key.toString()}
+    keyExtractor={(item, index) => index.toString()}
     renderItem={({item, index}) => 
         <TouchableOpacity 
         key={index}
-        onPress={() => this.onAccountDetails(index)}
-        style={styles.accountItem}>
+        onPress={() => this.onAccountDetails(item)}
+        style={styles.accountItemCC}>
         <View style={styles.accountItemInner}>
             <View>
+            {/* 
+            customerId
+            creditCardNumber
+            creditCardType
+            issueDate
+            expiryDate
+            cvv
+            maxLimit
+            */}
+              <View key={'1-'+{index}} style={{}}>
+                <Text key={'2-'+{index}} style={{color: "#0f469e", fontSize: 20}}>Credit card: {item.creditCardType}
+                </Text>
+                <View key={'v1-'+{index}}><Text key={'vt1-'+{index}} style={{color: '#bdc3c7'}}>{item.creditCardNumber}</Text></View>
+                {/* <Text>{item.customerId}</Text> */}
+                {/* <Text>{item.issueDate}</Text> */}
+                {/* <Text>{item.expiryDate}</Text> */}
+                {/* <Text>{item.cvv}</Text> */}
+                {/* <Text>{item.maxLimit}</Text> */}
+              </View>
+            </View>
+            <View style={{
+              alignItems: 'flex-end'
+                }}>
+                <View key={'v2-'+{index}}><Text key={'vt2-'+{index}} style={{
+                    fontSize: 16,
+                    color: '#0f469e',
+                }}>
+                Max limit: £{item.maxLimit}</Text></View>
+                <View key={'v1-'+{index}}><Text key={'vt1-'+{index}} style={{color: '#bdc3c7'}}>Available: £{item.maxLimit}</Text></View> 
+            </View> 
+                {/* 
                 <View key={'1-'+{index}} style={{}}>
                 <Text key={'2-'+{index}} style={{color: "#0f469e", fontSize: 20}}>{item.name}
                 </Text></View>
@@ -183,8 +239,39 @@ export default class AccountListScreen extends Component {
                     fontSize: 20,
                     color: '#0f469e',
                 }}>
-                £{item.balance}</Text></View>
+                £{item.balance}</Text></View> 
+            </View> */}
+        </View>
+        </TouchableOpacity>
+    }
+    />
+    <FlatList 
+    data={this.state.creditCard}
+    style={{padding:15}}
+    keyExtractor={(item, index) => index.toString()}
+    renderItem={({item, index}) => 
+        <TouchableOpacity 
+        key={index}
+        onPress={() => this.onAccountDetails(item)}
+        style={styles.accountItem}>
+        <View style={styles.accountItemInner}>
+            <View>
+              <View key={'1-'+{index}} style={{}}>
+                <Text key={'2-'+{index}} style={{color: "#0f469e", fontSize: 20}}>Mortgage: {item.creditCardType}
+                </Text>
+                <View key={'v1-'+{index}}><Text key={'vt1-'+{index}} style={{color: '#bdc3c7'}}>{item.creditCardNumber}</Text></View>
+              </View>
             </View>
+            <View style={{
+              alignItems: 'flex-end'
+                }}>
+                <View key={'v2-'+{index}}><Text key={'vt2-'+{index}} style={{
+                    fontSize: 16,
+                    color: '#0f469e',
+                }}>
+                Max limit: £{item.maxLimit}</Text></View>
+                <View key={'v1-'+{index}}><Text key={'vt1-'+{index}} style={{color: '#bdc3c7'}}>Available: {item.maxLimit}</Text></View> 
+            </View> 
         </View>
         </TouchableOpacity>
     }
@@ -210,7 +297,6 @@ const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         width: null,
         height: null,
         backgroundColor: '#ecf0f1'
@@ -235,16 +321,25 @@ const styles = StyleSheet.create({
       width: 24,
       height: 24,
     },
-    accountItem: {
+    accountItemCC: {
       backgroundColor: 'white',
-      borderColor: '#2f73e0',
+      borderColor: 'rgb(95,155,216)',
       borderLeftWidth: 3,
       marginBottom: 10,
-      borderRadius: 3,
+      borderRadius: 0,
+    },
+    accountItem: {
+      backgroundColor: 'white',
+      borderColor: 'rgb(201,123,84)', //2f73e0
+      borderLeftWidth: 3,
+      marginBottom: 10,
+      borderRadius: 0,
     },
     accountItemInner: {
         borderColor: '#7f8c8d',
-        borderWidth: 1,
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        borderRightWidth: 1,
         padding: 15,
         flexDirection: 'row',
         justifyContent: 'space-between',
