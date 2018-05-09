@@ -9,50 +9,103 @@ import {
   Easing,
   Button,
   AsyncStorage,
-  Text
+  Text,
+  Alert
 } from 'react-native';
 import Dimensions from 'Dimensions';
 import { TabNavigator } from 'react-navigation';
 
 import arrowImg from '../img/left-arrow.png';
-import BalancesScreen from './BalancesScreen';
+import AccountListScreen from './AccountListScreen';
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 const SIZE = 40;
 
 export default class PersonalDetailsScreen extends Component {
+  static navigationOptions = ({navigation, screenProps}) => {
+      const params = navigation.state.params || {};
+      return {
+      title: 'Personal Details',
+      headerLeft: <TouchableOpacity
+      onPress={() => {
+          //this.props.navigation.toggleDrawer();
+          navigation.navigate('DrawerOpen');
+      }}>
+      <Icon name={'navicon'} size={20} color='#0f469e' style={{paddingLeft: 15}}/></TouchableOpacity>
+      ,//<View></View>
+      headerRight: <Button title={'Logout'} color='#0f469e'
+      onPress={() => {
+          Alert.alert(
+              'Log out',
+              'Are you sure?',
+              [
+                {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+                {text: 'Yes', onPress: () => params.onLogout()},
+              ],
+              { cancelable: false }
+            )}}>
+          </Button>
+      }
+  }
+
+  componentDidMount() {
+      this.props.navigation.setParams({
+          onLogout: this.onLogout,
+      })
+  }
+
+  onLogout() {
+    this.props.navigation.navigate('Login');
+  }
+
+  constructor(props) {
+    super(props);
+    
+    this.onLogout = this.onLogout.bind(this);
+  }
+
   render() {
     return (
     <View style={{
     flex: 1,
     width: null,
     height: null,
-    backgroundColor: '#34495e'
+    backgroundColor: '#ecf0f1'
     }}>
       <View style={{padding: 10}}>
-        <TouchableOpacity 
-          style={{
-              backgroundColor: 'white',
-              borderColor: '#e74c3c',
-              borderLeftWidth: 2,
-              marginBottom: 10,
-              padding: 10,
-              borderRadius: 10,
-              width: '50%'
-          }}>
-          <Text>Account List</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={{
-              backgroundColor: 'white',
-              borderColor: '#e74c3c',
-              borderLeftWidth: 2,
-              marginBottom: 10,
-              padding: 10,
-              borderRadius: 10,
-              width: '50%'
-          }}>
-          <Text>Account Details</Text>
-        </TouchableOpacity>
+        <Text>
+          customerId: ggarter0
+        </Text>
+        <Text>
+          firstName: Gilly
+        </Text>
+        <Text>
+          lastName: Garter
+        </Text>
+        <Text>
+          email: ggarter0@whitehouse.gov
+        </Text>
+        <Text>
+          gender: Female
+        </Text>
+        <Text>
+          DOB: "7/18/2017
+        </Text>
+        <Text>
+          state: TX
+        </Text>
+        <Text>
+          city: Houston
+        </Text>
+        <Text>
+          postCode: 77234
+        </Text>
+        <Text>
+          streetNumber: 413
+        </Text>
+        <Text>
+          country: United States
+        </Text>
       </View>
     </View>
     );

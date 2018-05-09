@@ -9,8 +9,9 @@ import { LoginScreen } from './components/LoginScreen.js'
 
 import MembersScreen from './components/MembersScreen';
 import SignUpScreen from './components/SignUpScreen';
-import BalancesScreen from './components/BalancesScreen.js';
-import AccountScreen from './components/AccountScreen.js';
+import AccountListScreen from './components/AccountListScreen.js';
+import AccountDetailsScreen from './components/AccountDetailsScreen.js';
+import PersonalDetailsScreen from './components/PersonalDetailsScreen.js';
 
 // const MyApp = DrawerNavigator({
 //   Home: {
@@ -28,31 +29,39 @@ import AccountScreen from './components/AccountScreen.js';
 // }
 // );
 
+const DrawerStack = DrawerNavigator({
+  AccountList: { screen: AccountListScreen },
+  PersonalDetails: { screen: PersonalDetailsScreen },
+})
+
 const RootStack = StackNavigator(
   {
     Login: {
       screen: LoginScreen,
     },
     MembersArea: {
-      screen: MembersScreen,
+      //screen: MembersScreen,
+      screen: DrawerStack,
     },
-    SignUp: {
-      screen: SignUpScreen
-    },
-    Balances: {
-      screen: BalancesScreen
-    },
-    Account: {
-      screen: AccountScreen
-    }
+    // SignUp: {
+    //   screen: SignUpScreen
+    // },
+    // AccountList: {
+    //   screen: AccountListScreen
+    // },
+    // AccountDetails: {
+    //   screen: AccountDetailsScreen
+    // }
   },
   {
     //headerMode: 'none',
+    headerLeft: 'none',
     initialRouteName: 'Login',
     navigationOptions: {
       headerStyle: {
         backgroundColor: '#ecf0f1',
       },
+      visible: false,
       headerTintColor: '#0f469e', //text
       headerTitleStyle: {
         fontWeight: 'bold',

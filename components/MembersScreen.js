@@ -15,7 +15,7 @@ import Dimensions from 'Dimensions';
 import { TabNavigator, TabBarBottom, DrawerNavigator } from 'react-navigation';
 
 import arrowImg from '../img/left-arrow.png';
-import BalancesScreen from './BalancesScreen';
+import AccountListScreen from './AccountListScreen';
 import PersonalDetailsScreen from './PersonalDetailsScreen';
 // import FaBeer from 'react-icons/lib/fa/beer';
 //var FaBeer = require('react-icons/lib/fa/beer');
@@ -24,12 +24,12 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 const SIZE = 40;
 
 const Drawer = DrawerNavigator({
-  Balances: { screen: BalancesScreen, },
+  AccountList: { screen: AccountListScreen, },
   PersonalDetails: { screen: PersonalDetailsScreen, }
 },
 {
   //headerMode: 'none',
-  initialRouteName: 'Balances',
+  initialRouteName: 'AccountList',
   navigationOptions: {
     headerStyle: {
       backgroundColor: '#ecf0f1',
@@ -44,7 +44,7 @@ const Drawer = DrawerNavigator({
 );
 
 const TabStack = TabNavigator({
-  Balances: { screen: BalancesScreen, },
+  AccountList: { screen: AccountListScreen, },
   PersonalDetails: { screen: PersonalDetailsScreen, }
 },
 {

@@ -20,14 +20,15 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 
 const SIZE = 40;
 
-export default class BalancesScreen extends Component {
+export default class AccountListScreen extends Component {
     static navigationOptions = ({navigation, screenProps}) => {
         const params = navigation.state.params || {};
         return {
-        title: 'Accounts',
+        title: 'Account List',
         headerLeft: <TouchableOpacity
         onPress={() => {
-            this.props.navigation.toggleDrawer();
+            //this.props.navigation.toggleDrawer();
+            navigation.navigate('DrawerOpen');
         }}>
         <Icon name={'navicon'} size={20} color='#0f469e' style={{paddingLeft: 15}}/></TouchableOpacity>
         ,//<View></View>
@@ -57,23 +58,22 @@ export default class BalancesScreen extends Component {
 
     //this.props.navigation.toggleDrawer();
     this.state = {
-      isLoading: false,
+      userId: this.props.navigation.getParam('username'),
       accounts: [
-          {name: 'Current Account', balance: '560.45', sortCode: '05-23-81', accountNumber: '45367863', key: 1},
-          {name: 'Savings Account', balance: '14000.01', sortCode: '05-23-81', accountNumber: '45367863', key: 2},
-          {name: 'Credit Card', balance: '5000.90', sortCode: '05-23-81', accountNumber: '45367863', key: 3},
-          {name: 'Regular Saver1', balance: '5000.00', sortCode: '05-23-81', accountNumber: '45367863', key: 4},
-          {name: 'Regular Saver2', balance: '5000.00', sortCode: '05-23-81', accountNumber: '45367863', key: 5},
-          {name: 'Regular Saver3', balance: '5000.00', sortCode: '05-23-81', accountNumber: '45367863', key: 6},
-          {name: 'Regular Saver4', balance: '5000.00', sortCode: '05-23-81', accountNumber: '45367863', key: 7},
-          {name: 'Regular Saver5', balance: '5000.00', sortCode: '05-23-81', accountNumber: '45367863', key: 8},
-          {name: 'Regular Saver6', balance: '5000.00', sortCode: '05-23-81', accountNumber: '45367863', key: 9},
+        // {name: 'Credit Card', balance: '5600000.45', sortCode: '05-23-81', accountNumber: '45367863', key: 1},
+        // {name: 'Mortgage', balance: '560.45', sortCode: '05-23-81', accountNumber: '45367863', key: 2},
+        // {name: 'Mortgage', balance: '560.45', sortCode: '05-23-81', accountNumber: '45367863', key: 3},
+        // {name: 'Mortgage', balance: '560.45', sortCode: '05-23-81', accountNumber: '45367863', key: 4},
       ]
     };
+
+    console.log('UserId: ' + this.state.userId);
 
     this.onPressBack = this.onPressBack.bind(this);
     this.onLogout = this.onLogout.bind(this);
     this.growAnimated = new Animated.Value(0);
+
+    this.getAccounts();
   }
 
   onLogout() {
@@ -81,15 +81,7 @@ export default class BalancesScreen extends Component {
 
     this.setState({isLoading: true});
 
-    Animated.timing(this.growAnimated, {
-      toValue: 1,
-      duration: 300,
-      easing: Easing.linear,
-    }).start();
-
-    setTimeout(() => {
-      this.props.navigation.goBack();
-    }, 500);
+    this.props.navigation.navigate('Login');
   }
 
   async userLogout() {
@@ -101,9 +93,28 @@ export default class BalancesScreen extends Component {
     }
   }
   
-  async onPressDoSomething() {
-    var DEMO_TOKEN = await AsyncStorage.getItem('token'); //STORAGE_KEY
-    console.log(DEMO_TOKEN);
+  async getAccounts() {
+    //var DEMO_TOKEN = await AsyncStorage.getItem('token'); //STORAGE_KEY
+    //console.log(DEMO_TOKEN);
+    fetch("http://localhost:8082/mortgages/02", {
+        method: "GET",
+        headers: {
+          'userId': this.state.userId
+        }
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+        //this.setState({transactions: responseData});
+        console.log(responseData)
+    }).catch((error) => {
+      console.log("error: " + error);
+    })
+    .done();
+  }
+
+  async getAccounts2() {
+    //var DEMO_TOKEN = await AsyncStorage.getItem('token'); //STORAGE_KEY
+    //console.log(DEMO_TOKEN);
     // fetch("http://localhost:3001/api/data", {
     //     method: "GET",
     //     headers: {
@@ -171,7 +182,6 @@ export default class BalancesScreen extends Component {
                 <View key={'v2-'+{index}}><Text key={'vt2-'+{index}} style={{
                     fontSize: 20,
                     color: '#0f469e',
-                    //alignSelf: 'flex-end',
                 }}>
                 £{item.balance}</Text></View>
             </View>

@@ -32,25 +32,10 @@ export default class ButtonSubmit extends Component {
     this.loginSuccess = this.loginSuccess.bind(this);
   }
 
-  loginSuccess() {
-    this.setState({isLoading: true});
-    Animated.timing(this.buttonAnimated, {
-      toValue: 1,
-      duration: 200,
-      easing: Easing.linear,
-    }).start();
-
-    setTimeout(() => {
-      this._onGrow();
-    }, 2000);
-
-    this.props.navigate('MembersArea')
-    //this.props.navigate('Balances');
-    setTimeout(() => {
-      this.setState({isLoading: false});
-      this.buttonAnimated.setValue(0);
-      this.growAnimated.setValue(0);
-    }, 2300);
+  loginSuccess(username) {
+    //this.props.navigate('PersonalDetails')
+    //console.log('buttonsubmit ' + username);
+    this.props.navigate('AccountList', {username: username});
   }
 
   _onPress() {
@@ -60,24 +45,7 @@ export default class ButtonSubmit extends Component {
     return;
   }
 
-  _onGrow() {
-    Animated.timing(this.growAnimated, {
-      toValue: 1,
-      duration: 200,
-      easing: Easing.linear,
-    }).start();
-  }
-
   render() {
-    const changeWidth = this.buttonAnimated.interpolate({
-      inputRange: [0, 1],
-      outputRange: [DEVICE_WIDTH - MARGIN, MARGIN],
-    });
-    const changeScale = this.growAnimated.interpolate({
-      inputRange: [0, 1],
-      outputRange: [1, MARGIN],
-    });
-    {/*changeWidth*/}
     return (
       <View style={styles.container}>
         <Animated.View style={{width: DEVICE_WIDTH - MARGIN }}>
@@ -91,9 +59,6 @@ export default class ButtonSubmit extends Component {
               <Text style={styles.text}>{this.props.content}</Text>
             )}
           </TouchableOpacity>
-          <Animated.View
-            style={[styles.circle, {transform: [{scale: changeScale}]}]}
-          />
         </Animated.View>
       </View>
     );
