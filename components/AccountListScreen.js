@@ -17,6 +17,7 @@ import Dimensions from 'Dimensions';
 
 import arrowImg from '../img/left-arrow.png';
 import Icon from 'react-native-vector-icons/FontAwesome'
+import spinner from '../img/loading3.gif';
 
 const SIZE = 40;
 
@@ -24,6 +25,7 @@ export default class AccountListScreen extends Component {
     static navigationOptions = ({navigation, screenProps}) => {
         const params = navigation.state.params || {};
         return {
+        isFetching: false,
         title: 'Account List',
         headerLeft: <TouchableOpacity
         onPress={() => {
@@ -58,14 +60,15 @@ export default class AccountListScreen extends Component {
 
     //this.props.navigation.toggleDrawer();
     this.state = {
+      isLoading: true,
       userId: this.props.navigation.getParam('username'),
       creditCard: [
-        {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260},
-        {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260}
+        // {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260},
+        // {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260}
       ],
       mortgage: [
-        {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260},
-        {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260}
+        // {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260},
+        // {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260}
       ],
       accounts: [
         // {name: 'Credit Card', balance: '5600.45', sortCode: '05-23-81', accountNumber: '45367863', key: 1},
@@ -77,13 +80,12 @@ export default class AccountListScreen extends Component {
 
     //console.log('UserId: ' + this.state.userId);
 
-    this.onPressBack = this.onPressBack.bind(this);
     this.onLogout = this.onLogout.bind(this);
-    this.getAccounts = this.getAccounts.bind(this);
+    //this.getAccounts = this.getAccounts.bind(this);
     this.onAccountDetails = this.onAccountDetails.bind(this);
     this.growAnimated = new Animated.Value(0);
 
-    //this.getAccounts();
+    this.getAccounts();
   }
 
   onLogout() {
@@ -104,62 +106,31 @@ export default class AccountListScreen extends Component {
   }
   
   async getAccounts() {
+    // if (!this.state.isFetching) {
+    //   this.state.isFetching = true;
+    // } else return;
 
-    //var DEMO_TOKEN = await AsyncStorage.getItem('token'); //STORAGE_KEY
-    //console.log(DEMO_TOKEN);
-    var url = "http://localhost:8082/mvp-dev/creditcard/" + 
-    //this.state.userId; 
+    var url = "http://52.50.41.159:8087/mvp-dev/creditcard/" + 
     'hhaytonci';
     console.log('GET request from ' + url);
     fetch(url, {
         method: "GET",
         headers: {
+          Accept: 'application/json',
           //'userId': this.state.userId
         }
     })
-    .then((response) => response.text())
+    .then((response) => response.json())
     .then((responseData) => {
-        //this.setState({transactions: responseData});
-        console.log("response: " + responseData);
-        //this.setState({accounts: responseData});
-        //this.setState({creditCard: responseData});
-
+      this.setState({creditCard: [responseData]});
+      this.setState({mortgage: [responseData]});
+      //console.log(this.state.creditCard);
+      this.setState({isLoading: false});
     }).catch((error) => {
       console.log("error: " + error);
+      //this.getAccounts();
     })
     .done();
-  }
-
-  async getAccounts2() {
-    //var DEMO_TOKEN = await AsyncStorage.getItem('token'); //STORAGE_KEY
-    //console.log(DEMO_TOKEN);
-    // fetch("http://localhost:3001/api/data", {
-    //     method: "GET",
-    //     headers: {
-    //     'Authorization': 'Bearer ' + DEMO_TOKEN
-    //     }
-    // })
-    // .then((response) => response.json())
-    // .then((responseData) => {
-    //     Alert.alert(responseData.data);
-    // })
-    // .done();
-  }
-
-  onPressBack() {
-    if (this.state.isLoading) return;
-
-    this.setState({isLoading: true});
-
-    Animated.timing(this.growAnimated, {
-      toValue: 1,
-      duration: 300,
-      easing: Easing.linear,
-    }).start();
-
-    setTimeout(() => {
-      this.props.navigation.goBack();
-    }, 500);
   }
 
   onAccountDetails(item) {
@@ -186,6 +157,9 @@ export default class AccountListScreen extends Component {
 
     return (
     <View style={styles.container}>
+    {this.state.isLoading ? (
+    <Image source={spinner} style={styles.spinner} /> 
+    ) : ( null )}
     <FlatList 
     data={this.state.creditCard}
     style={{padding:15}}
@@ -320,6 +294,10 @@ const styles = StyleSheet.create({
     image: {
       width: 24,
       height: 24,
+    },
+    spinner: {
+      width: 100,
+      height: 100,
     },
     accountItemCC: {
       backgroundColor: 'white',

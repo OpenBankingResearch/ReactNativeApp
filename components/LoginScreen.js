@@ -82,16 +82,17 @@ export class LoginScreen extends Component {
   onLogin(callback) {
     //console.log('login ' + this.state.username);
     Keyboard.dismiss();
-    if (this.state.password != '123' && this.state.password != null) {
-      this.setState({invalidLogin: !this.state.invalidLogin})
-      setTimeout(() =>
-      {
-        this.setState({invalidLogin: !this.state.invalidLogin})
-      }, 1000)
-    }
-    else {
-      callback(this.state.username);
-    }
+    // if (this.state.password != '123' && this.state.password != null) {
+    //   this.setState({invalidLogin: !this.state.invalidLogin})
+    //   setTimeout(() =>
+    //   {
+    //     this.setState({invalidLogin: !this.state.invalidLogin})
+    //   }, 1000)
+    // }
+    // else {
+    //   callback(this.state.username);
+    // }
+    callback(this.state.username);
   }
 
   usernameChange(username) {
