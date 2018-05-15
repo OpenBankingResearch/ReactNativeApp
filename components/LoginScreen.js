@@ -144,12 +144,12 @@ export class LoginScreen extends Component {
             autoCorrect={false}
             onChangeText={this.passwordChange}
           />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             activeOpacity={0.7}
             style={styles.btnEye}
             onPress={this.showPass}>
           <Image source={eyeImg} style={styles.iconEye} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         {/* Submit (Login) */}
         <ButtonSubmit onLogin={this.onLogin.bind(this)} navigate={this.props.navigation.navigate} styles={{flex: 1}}
         content={'LOGIN'}

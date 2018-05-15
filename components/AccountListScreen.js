@@ -18,6 +18,7 @@ import Dimensions from 'Dimensions';
 import arrowImg from '../img/left-arrow.png';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import spinner from '../img/loading3.gif';
+import creditCard from '../img/creditCard.png';
 
 const SIZE = 40;
 
@@ -110,9 +111,8 @@ export default class AccountListScreen extends Component {
     //   this.state.isFetching = true;
     // } else return;
 
-    var url = "http://52.50.41.159:8087/mvp-dev/creditcard/" + 
-    'hhaytonci';
-    console.log('GET request from ' + url);
+    var url = "http://52.50.41.159:8087/api/creditcard/enipperhd";
+    //console.log('GET request from ' + url);
     fetch(url, {
         method: "GET",
         headers: {
@@ -122,8 +122,31 @@ export default class AccountListScreen extends Component {
     })
     .then((response) => response.json())
     .then((responseData) => {
+      //console.log(responseData);
       this.setState({creditCard: [responseData]});
-      this.setState({mortgage: [responseData]});
+      //this.setState({mortgage: [responseData]});
+      //console.log(this.state.creditCard);
+      this.setState({isLoading: false});
+    }).catch((error) => {
+      console.log("error: " + error);
+      //this.getAccounts();
+    })
+    .done();
+
+    url = "http://52.50.41.159:8087/api/mortgages/enipperhd";
+    ///console.log('GET request from ' + url);
+    fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: 'application/json',
+          //'userId': this.state.userId
+        }
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData);
+      //this.setState({creditCard: [responseData]});
+      this.setState({mortgage: responseData});
       //console.log(this.state.creditCard);
       this.setState({isLoading: false});
     }).catch((error) => {
@@ -170,6 +193,7 @@ export default class AccountListScreen extends Component {
         onPress={() => this.onAccountDetails(item)}
         style={styles.accountItemCC}>
         <View style={styles.accountItemInner}>
+        <View style={styles.accountItemInnerRow}>
             <View>
             {/* 
             customerId
@@ -181,14 +205,9 @@ export default class AccountListScreen extends Component {
             maxLimit
             */}
               <View key={'1-'+{index}} style={{}}>
-                <Text key={'2-'+{index}} style={{color: "#0f469e", fontSize: 20}}>Credit card: {item.creditCardType}
+                <Text key={'2-'+{index}} style={{color: "#0f469e", fontSize: 20}}>Credit Card
                 </Text>
                 <View key={'v1-'+{index}}><Text key={'vt1-'+{index}} style={{color: '#bdc3c7'}}>{item.creditCardNumber}</Text></View>
-                {/* <Text>{item.customerId}</Text> */}
-                {/* <Text>{item.issueDate}</Text> */}
-                {/* <Text>{item.expiryDate}</Text> */}
-                {/* <Text>{item.cvv}</Text> */}
-                {/* <Text>{item.maxLimit}</Text> */}
               </View>
             </View>
             <View style={{
@@ -200,27 +219,33 @@ export default class AccountListScreen extends Component {
                 }}>
                 Max limit: £{item.maxLimit}</Text></View>
                 <View key={'v1-'+{index}}><Text key={'vt1-'+{index}} style={{color: '#bdc3c7'}}>Available: £{item.maxLimit}</Text></View> 
-            </View> 
-                {/* 
-                <View key={'1-'+{index}} style={{}}>
-                <Text key={'2-'+{index}} style={{color: "#0f469e", fontSize: 20}}>{item.name}
-                </Text></View>
-                <View key={'v1-'+{index}}><Text key={'vt1-'+{index}} style={{color: '#bdc3c7'}}>{item.sortCode} | {item.accountNumber}</Text></View>
             </View>
-            <View style={{
-                }}>
-                <View key={'v2-'+{index}}><Text key={'vt2-'+{index}} style={{
-                    fontSize: 20,
-                    color: '#0f469e',
-                }}>
-                £{item.balance}</Text></View> 
-            </View> */}
+            </View>
         </View>
+            <View style={{ 
+              flexDirection: 'row', 
+              backgroundColor: 'rgb(250,250,250)',
+              borderColor: '#7f8c8d',
+              borderTopWidth: 0,
+              borderBottomWidth: 1,
+              borderRightWidth: 1,
+              padding: 10,}}>
+              <Image source={creditCard} style={{width: 50, height: 40, resizeMode:'stretch'}} /> 
+              <View style={{flexDirection: 'column', paddingLeft: 5, paddingTop: 1}}>
+                <Text style={{
+                  //paddingLeft: 5, paddingTop: 10,
+                  color: '#bdc3c7'
+                }}>{item.creditCardType}</Text>
+                <View key={'v1-'+{index}}><Text style={{
+                  //paddingLeft: 5, paddingTop: 10, 
+                  color: '#bdc3c7'}}>{item.creditCardNumber}</Text></View>
+              </View>
+            </View>
         </TouchableOpacity>
     }
     />
     <FlatList 
-    data={this.state.creditCard}
+    data={this.state.mortgage}
     style={{padding:15}}
     keyExtractor={(item, index) => index.toString()}
     renderItem={({item, index}) => 
@@ -229,11 +254,32 @@ export default class AccountListScreen extends Component {
         onPress={() => this.onAccountDetails(item)}
         style={styles.accountItem}>
         <View style={styles.accountItemInner}>
+        <View style={styles.accountItemInnerRow}>
             <View>
+            {/* 
+              "_id": "5af2d5169dc279279cfe2a42",
+10:37:29:     "accountInterestRate": 2.47,
+10:37:29:     "accountType": 112,
+10:37:29:     "advanceDate": "5/16/2016",
+10:37:29:     "amountAdvanced": 6265,
+10:37:29:     "amountGranted": 3824,
+10:37:29:     "currentBalance": 17,--
+10:37:29:     "customerId": "enipperhd",
+10:37:29:     "grossOrNet": "Net",
+10:37:29:     "interestBalance": 9630,--
+10:37:29:     "openingBalance": 260,
+10:37:29:     "openingBranch": "5 Ryan Junction",
+10:37:29:     "openingDate": "3/7/2011",
+10:37:29:     "principalBalance": 7228,
+10:37:29:     "remainingProductTerm": 6,
+10:37:29:     "repayment": 55,
+10:37:29:     "totalProductTerm": 250,
+10:37:29:     "twinAccount": true, 
+*/}
               <View key={'1-'+{index}} style={{}}>
-                <Text key={'2-'+{index}} style={{color: "#0f469e", fontSize: 20}}>Mortgage: {item.creditCardType}
+                <Text key={'2-'+{index}} style={{color: "#0f469e", fontSize: 20}}>Mortgage
                 </Text>
-                <View key={'v1-'+{index}}><Text key={'vt1-'+{index}} style={{color: '#bdc3c7'}}>{item.creditCardNumber}</Text></View>
+                <View key={'v1-'+{index}}><Text key={'vt1-'+{index}} style={{color: '#bdc3c7'}}>{item._id.substring(0, 16)}</Text></View>
               </View>
             </View>
             <View style={{
@@ -243,9 +289,10 @@ export default class AccountListScreen extends Component {
                     fontSize: 16,
                     color: '#0f469e',
                 }}>
-                Max limit: £{item.maxLimit}</Text></View>
-                <View key={'v1-'+{index}}><Text key={'vt1-'+{index}} style={{color: '#bdc3c7'}}>Available: {item.maxLimit}</Text></View> 
+                Current Balance: £{item.currentBalance}</Text></View>
+                <View key={'v1-'+{index}}><Text key={'vt1-'+{index}} style={{color: '#bdc3c7'}}>Interest Balance: £{item.interestBalance}</Text></View> 
             </View> 
+        </View>
         </View>
         </TouchableOpacity>
     }
@@ -313,15 +360,17 @@ const styles = StyleSheet.create({
       marginBottom: 10,
       borderRadius: 0,
     },
+    accountItemInnerRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        borderRadius: 2,
+    },
     accountItemInner: {
         borderColor: '#7f8c8d',
         borderTopWidth: 1,
         borderBottomWidth: 1,
         borderRightWidth: 1,
         padding: 15,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        borderRadius: 2,
     },
   });
 
