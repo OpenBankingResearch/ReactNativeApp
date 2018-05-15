@@ -63,23 +63,15 @@ export default class AccountListScreen extends Component {
     this.state = {
       isLoading: true,
       userId: this.props.navigation.getParam('username'),
-      creditCard: [
-        // {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260},
-        // {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260}
-      ],
-      mortgage: [
-        // {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260},
-        // {"_id":{"timestamp":1525856255,"machine":10338937,"pid":7660,"increment":4750997,"creationTime":"2018-05-09T08:57:35Z"},"customerId":"hhaytonci","creditCardNumber":3585459293787904,"creditCardType":"jcb","issueDate":"4/12/2017","expiryDate":"6/18/2021","maxLimit":29407,"cvv":260}
-      ],
-      accounts: [
-        // {name: 'Credit Card', balance: '5600.45', sortCode: '05-23-81', accountNumber: '45367863', key: 1},
-        // {name: 'Mortgage', balance: '560.45', sortCode: '05-23-81', accountNumber: '45367863', key: 2},
-        // {name: 'Mortgage', balance: '560.45', sortCode: '05-23-81', accountNumber: '45367863', key: 3},
-        // {name: 'Mortgage', balance: '560.45', sortCode: '05-23-81', accountNumber: '45367863', key: 4},
-      ]
+      creditCard: [],
+      mortgage: [],
+      accounts: []
     };
 
-    //console.log('UserId: ' + this.state.userId);
+    if (this.state.userId !== undefined) {
+      this.storeItem('username', this.state.userId);
+      console.log('UserId: ' + this.state.userId);
+    }
 
     this.onLogout = this.onLogout.bind(this);
     //this.getAccounts = this.getAccounts.bind(this);
@@ -87,6 +79,14 @@ export default class AccountListScreen extends Component {
     this.growAnimated = new Animated.Value(0);
 
     this.getAccounts();
+  }
+
+  async storeItem(item, selectedValue) {
+    try {
+      await AsyncStorage.setItem(item, selectedValue);
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
+    }
   }
 
   onLogout() {
@@ -111,7 +111,10 @@ export default class AccountListScreen extends Component {
     //   this.state.isFetching = true;
     // } else return;
 
-    var url = "http://52.50.41.159:8087/api/creditcard/enipperhd";
+    var customerId = this.state.userId;
+    //customerId = 'enipperhd';
+
+    var url = "http://52.50.41.159:8087/api/creditcard/" + customerId;
     //console.log('GET request from ' + url);
     fetch(url, {
         method: "GET",
@@ -133,7 +136,7 @@ export default class AccountListScreen extends Component {
     })
     .done();
 
-    url = "http://52.50.41.159:8087/api/mortgages/enipperhd";
+    url = "http://52.50.41.159:8087/api/mortgages/" + customerId;
     ///console.log('GET request from ' + url);
     fetch(url, {
         method: "GET",
@@ -144,7 +147,7 @@ export default class AccountListScreen extends Component {
     })
     .then((response) => response.json())
     .then((responseData) => {
-      console.log(responseData);
+      //console.log(responseData);
       //this.setState({creditCard: [responseData]});
       this.setState({mortgage: responseData});
       //console.log(this.state.creditCard);

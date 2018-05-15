@@ -47,11 +47,32 @@ export default class PersonalDetailsScreen extends Component {
           </Button>
       }
   }
-
-  componentDidMount() {
-      this.props.navigation.setParams({
-          onLogout: this.onLogout,
-      })
+  
+  async getDetails() {
+    // if (!this.state.isFetching) {
+    //   this.state.isFetching = true;
+    // } else return;
+    var username = this.state.username;
+    console.log('personal details: ' + username);
+    var url = "http://52.50.41.159:8087/api/Customer/" + username;
+    //console.log('GET request from ' + url);
+    fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: 'application/json',
+          //'userId': this.state.userId
+        }
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData);
+      this.setState({details: responseData});
+      this.setState({isLoading: false});
+    }).catch((error) => {
+      console.log("error: " + error);
+      //this.getAccounts();
+    })
+    .done();
   }
 
   onLogout() {
@@ -60,11 +81,32 @@ export default class PersonalDetailsScreen extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      details: {},
+    }
     
     this.onLogout = this.onLogout.bind(this);
   }
 
+  async componentDidMount() {
+    await this.init()
+
+    this.props.navigation.setParams({
+      onLogout: this.onLogout,
+    })
+  }
+  
+  async init() {
+      const value = await AsyncStorage.getItem('username');
+
+      this.setState({username: value});
+
+      this.getDetails();
+  }
+
   render() {
+    const details = this.state.details;
     return (
     <View style={{
     flex: 1,
@@ -73,38 +115,38 @@ export default class PersonalDetailsScreen extends Component {
     backgroundColor: '#ecf0f1'
     }}>
       <View style={{padding: 10}}>
-        <Text>
-          customerId: ggarter0
+        <Text style={styles.text}>
+          Customer Id: <Text>{details.customerId}</Text>
         </Text>
-        <Text>
-          firstName: Gilly
+        <Text style={styles.text}>
+          First Name: {details.firstName}
         </Text>
-        <Text>
-          lastName: Garter
+        <Text style={styles.text}>
+          Last Name: {details.lastName}
         </Text>
-        <Text>
-          email: ggarter0@whitehouse.gov
+        <Text style={styles.text}>
+          Gender: {details.gender}
         </Text>
-        <Text>
-          gender: Female
+        <Text style={styles.text}>
+          Email: {details.email}
         </Text>
-        <Text>
-          DOB: "7/18/2017
+        <Text style={styles.text}>
+          Date Of Birth: {details.dob}
         </Text>
-        <Text>
-          state: TX
+        <Text style={styles.text}>
+          State: {details.state}
         </Text>
-        <Text>
-          city: Houston
+        <Text style={styles.text}>
+          City: {details.city}
         </Text>
-        <Text>
-          postCode: 77234
+        <Text style={styles.text}>
+          Post Code: {details.postCode}
         </Text>
-        <Text>
-          streetNumber: 413
+        <Text style={styles.text}>
+          Street Number: {details.streetNumber}
         </Text>
-        <Text>
-          country: United States
+        <Text style={styles.text}>
+          Counter: {details.country}
         </Text>
       </View>
     </View>
@@ -142,4 +184,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
   },
+  text: {
+    color: "#0f469e", fontSize: 20
+  }
 });

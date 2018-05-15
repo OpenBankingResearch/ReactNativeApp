@@ -37,9 +37,10 @@ export class LoginScreen extends Component {
     this.usernameChange = this.usernameChange.bind(this);
     this.passwordChange = this.passwordChange.bind(this);
     this.onSignUp = this.onSignUp.bind(this);
+    this.loginPreset = this.loginPreset.bind(this);
     //this.onForgottenPassword = this.passwordChange.bind(this);
     this.storeItem('token', 'myToken123');
-    //this.props.navigation.navigate('AccountList'); //MembersArea
+    //this.props.navigation.navigate('PersonalDetails'); //MembersArea
   }
 
   showPass() {
@@ -93,6 +94,7 @@ export class LoginScreen extends Component {
     //   callback(this.state.username);
     // }
     callback(this.state.username);
+    //this.props.navigate('AccountList', {username: this.state.username});
   }
 
   usernameChange(username) {
@@ -111,6 +113,18 @@ export class LoginScreen extends Component {
     }
   }
 
+  loginPreset(index) {
+    if (index === 1) {
+      this.setState({username: 'enipperhd', password: 'soinoe'});
+    }
+    else if (index === 2) {
+      this.setState({username: 'ddoerlingef', password: 'sdwtnrbfds'});
+    }
+    else if (index === 3) {
+      this.setState({username: 'hhaytonci', password: 'sdfowjvj'});
+    }
+  }
+
   render() {
     return (
       <ImageBackground style={styles.background}>
@@ -120,12 +134,20 @@ export class LoginScreen extends Component {
       //borderWidth: 5,
       //borderColor: 'green',
       }}>
+      <View style={{height: 10, borderColor: 'cyan', 
+      //borderWidth: 2, 
+      flex: 1, marginTop: 50, flexDirection: 'row', alignItems: 'center'}}>
+        {/* <Button title={"1"} onPress={this.setLogin1} width={20} height={20} color="#841584"/> */}
+        <TouchableOpacity onPress={() => this.loginPreset(1)} style={styles.presetButton}><Text>Preset 1</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => this.loginPreset(2)} style={styles.presetButton}><Text>Preset 2</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => this.loginPreset(3)} style={styles.presetButton}><Text>Preset 3</Text></TouchableOpacity>
+      </View>
         {/* Logo */}
         <View style={styles.imageContainer}>
           <Image source={nbsLogo} style={styles.image} />
-          <Text style={styles.text}>Navonmesh</Text>
+          <Text style={styles.text}>Banking App</Text>
         </View>
-        <View style={{flex:1, justifyContent: 'flex-start'}}>
+        <View style={{flex:2, justifyContent: 'flex-start'}}>
         {/* Login Form */}
           <UserInput
             source={usernameImg}
@@ -134,6 +156,7 @@ export class LoginScreen extends Component {
             returnKeyType={'done'}
             autoCorrect={false}
             onChangeText={this.usernameChange}
+            value={this.state.username}
           />
           <UserInput
             source={passwordImg}
@@ -143,6 +166,7 @@ export class LoginScreen extends Component {
             autoCapitalize={'none'}
             autoCorrect={false}
             onChangeText={this.passwordChange}
+            value={this.state.password}
           />
           {/* <TouchableOpacity
             activeOpacity={0.7}
@@ -273,5 +297,13 @@ const styles = StyleSheet.create({
     //color: 'white',
     //backgroundColor: 'transparent',
     backgroundColor: 'transparent',
+  },
+  presetButton: {
+    alignItems: 'center',
+    backgroundColor: '#DDDDDD',
+    padding: 10, 
+    margin: 10, 
+    height: 40, 
+    width: 100
   },
 });

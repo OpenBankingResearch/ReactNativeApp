@@ -50,8 +50,9 @@ export default class AccountScreen extends Component {
         expiryDate: params.expiryDate,
         cvv: params.cvv,
         maxLimit: params.maxLimit,
-        transactions: null
+        transactions: null,
     };
+
 
     this.getTransactions = this.getTransactions.bind(this);
     this.getTransactions();

@@ -18,6 +18,7 @@ export default class UserInput extends Component {
           placeholderTextColor="white"
           underlineColorAndroid="transparent"
           onChangeText={this.props.onChangeText}
+          value={this.props.value}
         />
       </View>
     );
