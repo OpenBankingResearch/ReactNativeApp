@@ -282,7 +282,7 @@ export default class AccountListScreen extends Component {
               <View key={'1-'+{index}} style={{}}>
                 <Text key={'2-'+{index}} style={{color: "#0f469e", fontSize: 20}}>Mortgage
                 </Text>
-                <View key={'v1-'+{index}}><Text key={'vt1-'+{index}} style={{color: '#bdc3c7'}}>{item._id.substring(0, 16)}</Text></View>
+                <View key={'v1-'+{index}}><Text key={'vt1-'+{index}} style={{color: '#bdc3c7'}}>{item._id.substring(item._id.length - 16, item._id.length)}</Text></View>
               </View>
             </View>
             <View style={{
